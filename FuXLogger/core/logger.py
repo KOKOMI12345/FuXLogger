@@ -1,9 +1,12 @@
+import asyncio
+import asyncio.timeouts
 from .loglevel import LogLevel
 from .handlers import Handler
 from .LogBody import LogRecord
 from ..utils import ExtractException
 from ..utils.excformat import GetStackTrace
-from ..utils.timeutil import getLocalDateTime , getUTCDateTime
+from ..utils.timeutil import getLocalDateTime, getUTCDateTime
+from ..utils.exceptions import InvalidConfigurationException
 import threading
 import multiprocessing
 import queue
@@ -12,24 +15,45 @@ import sys
 import inspect
 
 class Logger:
-
-    def __init__(self,
-        name: str,
-        level: LogLevel = LogLevel.ON,
-        handlers: set[Handler] = set(),
-        enqueue: bool = False
-    )-> None:
+    def __init__(self, name: str, level: LogLevel = LogLevel.ON, handlers: set[Handler] = set(), enqueue: bool = False, is_async: bool = False):
         self.name: str = name
         self.level: LogLevel = level
         self.handlers: set[Handler] = handlers
         self.enqueue: bool = enqueue
+        self.is_async: bool = is_async
+        if enqueue and is_async:
+            raise InvalidConfigurationException("Cannot use enqueue and is_async at the same time")
         if enqueue:
             self.queue = queue.Queue()
             self.log_thread = threading.Thread(target=self.__enqueueHandler)
             self.log_thread.start()
+        elif is_async:
+            self.async_queue = asyncio.Queue()
+            self.loop = asyncio.get_running_loop()
+            self.start_async_logging()
+
+    def start_async_logging(self):
+        if not self.is_async:
+            return
+        self.log_task = self.loop.create_task(self.__async_enqueueHandler())
+
+    def stop_async_logging(self):
+        if self.is_async and self.log_task:
+            self.log_task.cancel()
+            try:
+                self.loop.run_until_complete(self.log_task)
+            except asyncio.CancelledError:
+                pass
+            except RuntimeError:
+                pass
+            self.log_task = None
+
+    def __del__(self):
+        if self.is_async:
+           self.stop_async_logging()
 
     def addLevel(self, level: dict[str, int]) -> None:
-        LogLevel.addlevel(level) # type: ignore
+        LogLevel.addlevel(level)
 
     def setLevel(self, level: LogLevel) -> None:
         self.level = level
@@ -39,6 +63,19 @@ class Logger:
 
     def removeHandler(self, handler: Handler) -> None:
         self.handlers.remove(handler)
+
+    async def __async_enqueueHandler(self) -> None:
+        while True:
+            try:
+                async with asyncio.Lock():
+                    record = await asyncio.wait_for(self.async_queue.get(), timeout=0.1)
+                    for handler in self.handlers:
+                        await asyncio.to_thread(handler.handle, record)
+                    self.async_queue.task_done()
+            except asyncio.TimeoutError:
+                continue
+            except asyncio.CancelledError:
+                break
 
     def __enqueueHandler(self) -> None:
         while True:
@@ -74,10 +111,12 @@ class Logger:
             module=module,  # type: ignore
             message=message
         )
-    
+
     def __log(self, level: LogLevel, message: str) -> None:
         if self.enqueue:
             self.queue.put(self.__makeRecord(message, level))
+        elif self.is_async:
+            self.async_queue.put_nowait(self.__makeRecord(message, level))
         else:
             for handler in self.handlers:
                 handler.handle(self.__makeRecord(message, level))
