@@ -1,7 +1,7 @@
 
 # FuXLogger
 
-[![FuXLogger](https://media.tenor.com/-VFGl8GUQRQAAAAi/fu-xuan-honkai-star-rail.gif)]
+![FuXLogger](https://media.tenor.com/-VFGl8GUQRQAAAAi/fu-xuan-honkai-star-rail.gif)
 
 ## 介绍
 
