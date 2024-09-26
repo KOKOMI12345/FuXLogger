@@ -3,6 +3,10 @@
 
 ![FuXLogger](https://media.tenor.com/A11YI0qGHRoAAAAi/fu-xuan-honkai-star-rail.gif)
 
+## v0.2.1 (2024-9-26)
+
+- ***修复了一些bug***
+
 ## v0.2.0 (2024-9-25)
 
 - ***实现异步记录日志功能,示例代码如下***

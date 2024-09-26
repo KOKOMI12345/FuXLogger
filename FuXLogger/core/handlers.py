@@ -109,7 +109,7 @@ class SocketHandler(Handler):
 
     def handle(self, record: LogRecord) -> None:
         if record.level.value >= self.level.value:
-            message = self.formatter.format(record)
+            message = Render.removeTags(self.formatter.format(record))
             self.process_queue.put(message)
             
     
@@ -132,4 +132,4 @@ class FileHandler(Handler):
         if record.level.value >= self.level.value:
             with self.lock:
                 with open(self.filename, self.mode, encoding=self.encoding) as f:
-                    f.write(f"{self.formatter.format(record)}\n")
+                    f.write(f"{Render.removeTags(self.formatter.format(record))}\n")

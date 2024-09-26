@@ -59,6 +59,17 @@ class Render:
         return f"{color.value}{font.value}{text}{Color.RESET.value}"
     
     @staticmethod
+    def removeTags(text: str) -> str:
+        """
+        移除XML标签。
+        
+        :param text: 要移除标签的文本。
+        :return: 移除标签后的文本。
+        """
+        pattern = r'<(\w+):(\w+)>(.*?)</(\w+):(\w+)>'
+        return re.sub(pattern, r'\3', text, flags=re.DOTALL)
+    
+    @staticmethod
     def renderWithXML(text: str) -> str:
         """
         根据XML标签渲染文本。

@@ -40,9 +40,6 @@ def ExtractException(exctype, e, tb) -> Optional[str]:
     # 记录异常信息到日志
     exception_info = "发生异常:\n"
     exception_info += tb_str
-    # 写入错误流
-    sys.stderr.write(exception_info)
-    sys.stderr.flush()
     # 返回异常信息
     return exception_info
 
@@ -59,5 +56,3 @@ def GetStackTrace(vokedepth: int = 1) -> str:
         funcname = frame.name
         stack_info += f"  at {funcname} in ({filename}:{line})\n"
     return stack_info
-    
-sys.excepthook = ExtractException

@@ -49,7 +49,7 @@ class Logger:
             self.log_task = None
 
     def __del__(self):
-        if self.is_async:
+        if self.is_async and not self.enqueue:
            self.stop_async_logging()
 
     def addLevel(self, level: dict[str, int]) -> None:
