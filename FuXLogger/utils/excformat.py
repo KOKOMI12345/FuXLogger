@@ -38,7 +38,7 @@ def ExtractException(exctype, e, tb) -> Optional[str]:
     tb_str = format_stack_trace(exctype, e, tb)
     
     # 记录异常信息到日志
-    exception_info = "发生异常:\n"
+    exception_info = ""
     exception_info += tb_str
     # 返回异常信息
     return exception_info

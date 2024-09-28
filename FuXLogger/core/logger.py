@@ -113,6 +113,9 @@ class Logger:
         )
 
     def __log(self, level: LogLevel, message: str) -> None:
+        """
+        记录一个日志的内部实现
+        """
         if self.enqueue:
             self.queue.put(self.__makeRecord(message, level))
         elif self.is_async:
@@ -121,31 +124,61 @@ class Logger:
             for handler in self.handlers:
                 handler.handle(self.__makeRecord(message, level))
 
-    def exception(self, message: str) -> None:
+    def exception(self, message: str, is_fatal: bool = False) -> None:
+        """
+        记录异常信息到日志,如果没有异常发生,这个只会记录一个ERROR级别的日志(取决于是否设置了is_fatal),如果有,则会带上堆栈信息
+        - is_fatal: 是否是致命错误,如果是,则会记录FATAL级别的日志,否则记录ERROR级别的日志
+        """
         exc_type, exc_value, exc_traceback = sys.exc_info()
         if exc_traceback is not None:
             exc_info = ExtractException(exc_type, exc_value, exc_traceback)
-            self.__log(LogLevel.ERROR, f"{message}\n{exc_info}")
+            if is_fatal:
+                self.__log(LogLevel.FATAL, f"{message}\n{exc_info}")
+            else:
+                self.__log(LogLevel.ERROR, f"{message}\n{exc_info}")
+        elif is_fatal:
+            self.__log(LogLevel.FATAL, message)
         else:
             self.__log(LogLevel.ERROR, message)
 
     def log(self, level: LogLevel, message: str) -> None:
+        """
+        记录一个 {level} 级别的日志
+        """
         self.__log(level, message)
 
     def trace(self, message: str) -> None:
+        """
+        记录一个 TRACE 级别的日志
+        """
         self.__log(LogLevel.TRACE, message)
 
     def debug(self, message: str) -> None:
+        """
+        记录一个 DEBUG 级别的日志
+        """
         self.__log(LogLevel.DEBUG, message)
 
     def info(self, message: str) -> None:
+        """
+        记录一个 INFO 级别的日志
+        """
         self.__log(LogLevel.INFO, message)
 
     def warning(self, message: str) -> None:
+        """
+        记录一个 WARN 级别的日志
+        """
         self.__log(LogLevel.WARN, message)
 
     def error(self, message: str) -> None:
+        """
+        记录一个 ERROR 级别的日志
+        """
         self.__log(LogLevel.ERROR, message)
 
     def fatal(self, message: str) -> None:
+        """
+        记录一个 FATAL 级别的日志
+        """
         self.__log(LogLevel.FATAL, message)

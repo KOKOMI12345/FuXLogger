@@ -3,6 +3,10 @@
 
 ![FuXLogger](https://media.tenor.com/A11YI0qGHRoAAAAi/fu-xuan-honkai-star-rail.gif)
 
+## v0.2.2 (2024-9-28)
+
+- ***logger.exception()方法改进, 添加了is_fatal参数, 用于用户确认此异常是否为致命错误, 并将其写入日志***
+
 ## v0.2.1 (2024-9-26)
 
 - ***修复了一些bug***

@@ -1,46 +1,29 @@
 
 from .loglevel import LogLevel
+from dataclasses import dataclass
 
+@dataclass
 class LogRecord:
     """
     这个类是用来存储日志信息的类
     """
-    def __init__(self,
-        name: str,
-        level: LogLevel,
-        levelName: str,
-        message: str,
-        time: str,
-        timestamp: float,
-        utctime: float,
-        module: str,
-        function: str,
-        line: int,
-        file: str,
-        pathname: str,
-        processid: int,
-        threadid: int,
-        threadName: str,
-        processName: str,
-        stack_info: str,
-    ) -> None:
-        self.name = name
-        self.level = level
-        self.levelName = levelName
-        self.message = message
-        self.timestamp = timestamp
-        self.time = time
-        self.utctime = utctime
-        self.module = module        
-        self.function = function
-        self.line = line
-        self.file = file
-        self.pathname = pathname
-        self.processid = processid
-        self.threadid = threadid
-        self.threadName = threadName
-        self.processName = processName
-        self.stack_info = stack_info
+    name: str
+    level: LogLevel
+    levelName: str
+    message: str
+    time: str
+    timestamp: float
+    utctime: float
+    module: str
+    function: str
+    line: int
+    file: str
+    pathname: str
+    processid: int
+    threadid: int
+    threadName: str
+    processName: str
+    stack_info: str
 
     def __str__(self) -> str:
         return f"""
