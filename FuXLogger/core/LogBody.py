@@ -19,6 +19,7 @@ class LogRecord:
     line: int
     file: str
     pathname: str
+    workdir: str
     processid: int
     threadid: int
     threadName: str
@@ -39,6 +40,7 @@ class LogRecord:
         Line: {self.line}, 
         File: {self.file}, 
         PathName: {self.pathname}, 
+        workdir: {self.workdir}, 
         ProcessID: {self.processid}, 
         ThreadID: {self.threadid}, 
         ThreadName: {self.threadName}, 
@@ -63,6 +65,7 @@ class LogRecord:
             "line": self.line,
             "file": self.file,
             "pathname": self.pathname,
+            "workdir": self.workdir,
             "processid": self.processid,
             "threadid": self.threadid,
             "threadName": self.threadName,
@@ -88,6 +91,7 @@ class LogRecord:
             self.line,
             self.file,
             self.pathname,
+            self.workdir,
             self.processid,
             self.threadid,
             self.threadName,

@@ -18,6 +18,7 @@ class LogFormatter:
     - {threadName}: 线程名
     - {processName}: 进程名
     - {pathname}: 日志所在文件路径
+    - {workdir}: 当前工作目录
     - {timestamp}: 日志本地时间戳
     - {utctime}: 日志UTC时间戳
     - {Stack}: 日志堆栈信息

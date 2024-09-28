@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from FuXLogger.__metadata__ import __version__ , __author__ , __project_name__ , __email__ , __license__
+from FuXLogger.__metadata__ import __version__ , __author__ , __project_name__ , __email__ , __license__ , __github_url__
 
 def load_requirements(filepath: str = "requirements.txt") -> list[str]:
     try:
@@ -19,7 +19,7 @@ setup(
     description='A useful logging library for Python',
     long_description=open('Readme.md','r',encoding='utf-8').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/KOKOMI12345/FuXLogger',
+    url=__github_url__,
     requires=load_requirements(),  # 依赖
     license=__license__,
     classifiers=[

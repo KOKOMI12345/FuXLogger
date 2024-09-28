@@ -105,7 +105,8 @@ class Logger:
             threadName=threading.current_thread().name,
             stack_info=GetStackTrace(5),
             file=os.path.basename(frame.f_code.co_filename),  # type: ignore
-            pathname=os.getcwd(),
+            pathname=frame.f_code.co_filename, # type: ignore
+            workdir=os.getcwd(),
             line=frame.f_lineno,  # type: ignore
             function=frame.f_code.co_name,  # type: ignore
             module=module,  # type: ignore
