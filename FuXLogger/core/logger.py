@@ -7,6 +7,7 @@ from ..utils import ExtractException
 from ..utils.excformat import GetStackTrace
 from ..utils.timeutil import getLocalDateTime, getUTCDateTime
 from ..utils.exceptions import InvalidConfigurationException
+from ..utils.exceptions import InvalidEnvironmentException
 import threading
 import multiprocessing
 import queue
@@ -28,9 +29,12 @@ class Logger:
             self.log_thread = threading.Thread(target=self.__enqueueHandler)
             self.log_thread.start()
         elif is_async:
-            self.async_queue = asyncio.Queue()
-            self.loop = asyncio.get_running_loop()
-            self.start_async_logging()
+            try:
+                self.async_queue = asyncio.Queue()
+                self.loop = asyncio.get_running_loop()
+                self.start_async_logging()
+            except RuntimeError as caused_by:
+                raise InvalidEnvironmentException("Cannot use is_async outside of an asyncio event loop") from caused_by
 
     def start_async_logging(self):
         if not self.is_async:
@@ -50,7 +54,10 @@ class Logger:
 
     def __del__(self):
         if self.is_async and not self.enqueue:
-           self.stop_async_logging()
+            try:
+              self.stop_async_logging()
+            except AttributeError:
+                pass
 
     def addLevel(self, level: dict[str, int]) -> None:
         LogLevel.addlevel(level)

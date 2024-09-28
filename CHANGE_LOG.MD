@@ -3,6 +3,10 @@
 
 ![FuXLogger](https://media.tenor.com/A11YI0qGHRoAAAAi/fu-xuan-honkai-star-rail.gif)
 
+## v0.2.4 (2024-9-28 17:27)
+
+- ***添加异常类 InvaildEnvironmentException, 用于表示在错误的环境运行时抛出异常***
+
 ## v0.2.3 (2024-9-28 16:56)
 
 - ***添加 {workdir} 变量到 LogFormatter, 用于获取当前工作目录***

@@ -1,6 +1,7 @@
 import argparse
 import subprocess
 import os
+import shutil
 
 class Builder:
     def __init__(self, command_file: str) -> None:
@@ -8,13 +9,19 @@ class Builder:
         self.commands = []
         self.read_commands()
 
+    def clean_dist(self) -> None:
+        # 删除dist文件夹
+        if os.path.exists('dist'):
+            print("Removing dist folder")
+            shutil.rmtree('dist')
+
     def remove_pycache(self, dir: str) -> None:
         # 查找指定的文件夹下和子文件夹下的所有__pycache__文件夹, 并删除
         for root, dirs, files in os.walk(dir):
             for name in dirs:
                 if name == '__pycache__':
                     print(f"Removing __pycache__ folder: {os.path.join(root, name)}")
-                    os.rmdir(os.path.join(root, name))
+                    shutil.rmtree(os.path.join(root, name))
 
     def read_commands(self) -> None:
         try:
@@ -26,6 +33,7 @@ class Builder:
             exit(1)
 
     def build(self) -> None:
+        self.clean_dist()
         for command in self.commands:
             print(f"Executing command: {command}")
             try:
@@ -37,7 +45,7 @@ class Builder:
                 print(f"Command failed: {command}. Error: {e}")
                 exit(e.returncode)
 
-    def __exit__(self) -> None:
+    def __del__(self) -> None:
         self.remove_pycache('FuXLogger')
 
 def main():
@@ -47,6 +55,7 @@ def main():
 
     builder = Builder(args.command_file)
     builder.build()
+    del builder
 
 if __name__ == '__main__':
     main()

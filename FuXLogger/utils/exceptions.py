@@ -29,3 +29,10 @@ class InvalidHandlerException(FuXLoggerException):
     Exception raised when there is an error in the handler configuration.
     """
     pass
+
+class InvalidEnvironmentException(FuXLoggerException):
+    """
+    Exception raised when there is an error in the environment configuration.
+    example: if you open the 'is_async' option ,but you running in sync mode, you will get this exception.
+    """
+    pass
