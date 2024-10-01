@@ -1,5 +1,5 @@
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 __author__ = "<符玄(KOKOMI12345)>"
 __email__ = "3072252442@qq.com"
 __license__ = "MIT"

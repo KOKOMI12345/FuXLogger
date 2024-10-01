@@ -1,6 +1,7 @@
 
 from .loglevel import LogLevel
 from dataclasses import dataclass
+from ..utils.types import Message
 
 @dataclass
 class LogRecord:
@@ -10,7 +11,7 @@ class LogRecord:
     name: str
     level: LogLevel
     levelName: str
-    message: str
+    message: Message
     time: str
     timestamp: float
     utctime: float
@@ -48,7 +49,7 @@ class LogRecord:
         StackInfo: {self.stack_info}
         """
     
-    def getMessage(self) -> str:
+    def getMessage(self) -> Message:
         return self.message
     
     def ToDict(self) -> dict:

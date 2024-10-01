@@ -3,6 +3,10 @@
 
 ![FuXLogger](https://media.tenor.com/A11YI0qGHRoAAAAi/fu-xuan-honkai-star-rail.gif)
 
+## v0.2.5 (2024-10-1 12:44)
+
+- ***添加了关于日志库的类型注解,使得代码更可读***
+
 ## v0.2.4 (2024-9-28 17:27)
 
 - ***添加异常类 InvaildEnvironmentException, 用于表示在错误的环境运行时抛出异常***

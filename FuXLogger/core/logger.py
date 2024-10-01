@@ -1,5 +1,4 @@
 import asyncio
-import asyncio.timeouts
 from .loglevel import LogLevel
 from .handlers import Handler
 from .LogBody import LogRecord
@@ -7,6 +6,7 @@ from ..utils import ExtractException
 from ..utils.excformat import GetStackTrace
 from ..utils.timeutil import getLocalDateTime, getUTCDateTime
 from ..utils.exceptions import InvalidConfigurationException
+from ..utils.types import Message
 from ..utils.exceptions import InvalidEnvironmentException
 import threading
 import multiprocessing
@@ -94,7 +94,7 @@ class Logger:
                 if not threading.main_thread().is_alive():
                     break
 
-    def __makeRecord(self, message: str, level: LogLevel) -> LogRecord:
+    def __makeRecord(self, message: Message, level: LogLevel) -> LogRecord:
         frame = inspect.currentframe().f_back.f_back.f_back  # type: ignore
         levelname = level.name
         current_module = inspect.getmodule(frame)
@@ -120,7 +120,7 @@ class Logger:
             message=message
         )
 
-    def __log(self, level: LogLevel, message: str) -> None:
+    def __log(self, level: LogLevel, message: Message) -> None:
         """
         记录一个日志的内部实现
         """
@@ -149,43 +149,43 @@ class Logger:
         else:
             self.__log(LogLevel.ERROR, message)
 
-    def log(self, level: LogLevel, message: str) -> None:
+    def log(self, level: LogLevel, message: Message) -> None:
         """
         记录一个 {level} 级别的日志
         """
         self.__log(level, message)
 
-    def trace(self, message: str) -> None:
+    def trace(self, message: Message) -> None:
         """
         记录一个 TRACE 级别的日志
         """
         self.__log(LogLevel.TRACE, message)
 
-    def debug(self, message: str) -> None:
+    def debug(self, message: Message) -> None:
         """
         记录一个 DEBUG 级别的日志
         """
         self.__log(LogLevel.DEBUG, message)
 
-    def info(self, message: str) -> None:
+    def info(self, message: Message) -> None:
         """
         记录一个 INFO 级别的日志
         """
         self.__log(LogLevel.INFO, message)
 
-    def warning(self, message: str) -> None:
+    def warning(self, message: Message) -> None:
         """
         记录一个 WARN 级别的日志
         """
         self.__log(LogLevel.WARN, message)
 
-    def error(self, message: str) -> None:
+    def error(self, message: Message) -> None:
         """
         记录一个 ERROR 级别的日志
         """
         self.__log(LogLevel.ERROR, message)
 
-    def fatal(self, message: str) -> None:
+    def fatal(self, message: Message) -> None:
         """
         记录一个 FATAL 级别的日志
         """
