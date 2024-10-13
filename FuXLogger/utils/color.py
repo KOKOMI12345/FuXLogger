@@ -70,7 +70,7 @@ class Render:
         return re.sub(pattern, r'\3', text, flags=re.DOTALL)
     
     @staticmethod
-    def renderWithXML(text: str) -> str:
+    def renderWithXML(text: str | bytes) -> str:
         """
         根据XML标签渲染文本。
 
@@ -102,7 +102,7 @@ class Render:
                 return f"{start_font}{content}{Color.RESET.value}"
             else:
                 return content
-        return re.sub(pattern, replaceFunc, text, flags=re.DOTALL)
+        return re.sub(pattern, replaceFunc, text, flags=re.DOTALL) # type: ignore
     
 if __name__ == '__main__':
     # text = "This is <purple:bold>purple</blue:bold> and <red:underline>red</red:underline> text."

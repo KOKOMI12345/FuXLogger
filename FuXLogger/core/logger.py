@@ -8,25 +8,27 @@ from ..utils.timeutil import getLocalDateTime, getUTCDateTime
 from ..utils.exceptions import InvalidConfigurationException
 from ..utils.types import Message
 from ..utils.exceptions import InvalidEnvironmentException
+from ..utils.LogQueue import LogQueue , LogQueueEmptyException
 import threading
 import multiprocessing
-import queue
 import os
 import sys
+import uuid
 import inspect
 
 class Logger:
-    def __init__(self, name: str, level: LogLevel = LogLevel.ON, handlers: set[Handler] = set(), enqueue: bool = False, is_async: bool = False):
+    def __init__(self, name: str, level: LogLevel, handlers: list[Handler] = [], enqueue: bool = False, is_async: bool = False):
         self.name: str = name
         self.level: LogLevel = level
-        self.handlers: set[Handler] = handlers
+        self.handlers: list[Handler] = handlers
         self.enqueue: bool = enqueue
         self.is_async: bool = is_async
+        self.uuid = uuid.uuid4()
         if enqueue and is_async:
             raise InvalidConfigurationException("Cannot use enqueue and is_async at the same time")
         if enqueue:
-            self.queue = queue.Queue()
-            self.log_thread = threading.Thread(target=self.__enqueueHandler)
+            self.queue = LogQueue()
+            self.log_thread = threading.Thread(target=self.__enqueueHandler, daemon=True)
             self.log_thread.start()
         elif is_async:
             try:
@@ -52,12 +54,16 @@ class Logger:
                 pass
             self.log_task = None
 
-    def __del__(self):
-        if self.is_async and not self.enqueue:
-            try:
-              self.stop_async_logging()
-            except AttributeError:
-                pass
+    def close(self) -> None:
+        """
+        清理资源的时候调用
+        """
+        if self.enqueue:
+            self.log_thread.join()
+        elif self.is_async:
+            self.stop_async_logging()
+        else:
+            pass
 
     def addLevel(self, level: dict[str, int]) -> None:
         LogLevel.addlevel(level)
@@ -66,7 +72,7 @@ class Logger:
         self.level = level
 
     def addHandler(self, handler: Handler) -> None:
-        self.handlers.add(handler)
+        self.handlers.append(handler)
 
     def removeHandler(self, handler: Handler) -> None:
         self.handlers.remove(handler)
@@ -90,9 +96,10 @@ class Logger:
                 record = self.queue.get(timeout=0.1)
                 for handler in self.handlers:
                     handler.handle(record)
-            except queue.Empty:
+            except LogQueueEmptyException:
                 if not threading.main_thread().is_alive():
                     break
+                continue
 
     def __makeRecord(self, message: Message, level: LogLevel) -> LogRecord:
         frame = inspect.currentframe().f_back.f_back.f_back  # type: ignore
