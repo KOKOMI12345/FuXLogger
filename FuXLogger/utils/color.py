@@ -56,7 +56,7 @@ class Render:
         :param font: 字体样式枚举值。
         :return: 渲染后的文本。
         """
-        return f"{color.value}{font.value}{text}{Color.RESET.value}"
+        return f"{color.value}{font.value}{text}{Color.RESET.value}" if color and font else text
     
     @staticmethod
     def removeTags(text: str) -> str:

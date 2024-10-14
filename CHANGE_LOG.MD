@@ -3,6 +3,10 @@
 
 ![FuXLogger](https://media.tenor.com/A11YI0qGHRoAAAAi/fu-xuan-honkai-star-rail.gif)
 
+## v0.2.7.post1 (2024-10-14 18:39)
+
+- ***修复了添加等级的bug***
+
 ## v0.2.7 (2024-10-14 18:17)
 
 - ***完善了日志等级管理***
