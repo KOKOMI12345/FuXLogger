@@ -1,6 +1,8 @@
 
 # 我这个FuXLogger的神奇bug
 
+![BUGS](https://media.tenor.com/Ky5De2QfmrsAAAAi/fu-xuan-honkai-star-rail.gif)
+
 ## 如下
 
 ### 2024-10-5(bug 1. 日志库莫名其妙丢日志问题)

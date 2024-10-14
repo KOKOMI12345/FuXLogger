@@ -1,6 +1,8 @@
 
 # MY FuXLogger logging library bugs
 
+![BUGS](https://media.tenor.com/Ky5De2QfmrsAAAAi/fu-xuan-honkai-star-rail.gif)
+
 ## ALL BUGS
 
 ### 2024-10-5 (bug1. log Incomplete with unknow reasons)
