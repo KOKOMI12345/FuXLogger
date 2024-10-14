@@ -1,6 +1,6 @@
 from .logger import Logger
 from .formatter import LogFormatter
-from .loglevel import LogLevel
+from .loglevel import Level , LogLevel
 import threading
 import atexit
 
@@ -11,7 +11,7 @@ class LogManager:
     lock = threading.Lock()
 
     @staticmethod
-    def getLogger(name: str,level: LogLevel = LogLevel.ON , formatter: LogFormatter = dftformatter, enqueue: bool = False, is_async: bool = False) -> Logger:
+    def getLogger(name: str,level: LogLevel = Level.ON , formatter: LogFormatter = dftformatter, enqueue: bool = False, is_async: bool = False) -> Logger:
         """
         获取一个日志记录器对象,注意,如果is_async为True,则确保必须再异步环境内调用此方法,否则会报错
         """

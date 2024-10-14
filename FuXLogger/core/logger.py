@@ -1,5 +1,5 @@
 import asyncio
-from .loglevel import LogLevel
+from .loglevel import Level , LogLevel , addlevel
 from .handlers import Handler
 from .LogBody import LogRecord
 from ..utils import ExtractException
@@ -17,13 +17,14 @@ import uuid
 import inspect
 
 class Logger:
-    def __init__(self, name: str, level: LogLevel, handlers: list[Handler] = [], enqueue: bool = False, is_async: bool = False):
+    def __init__(self, name: str, level: LogLevel, handlers: set[Handler] = set(), enqueue: bool = False, is_async: bool = False, only_handler: bool = False):
         self.name: str = name
         self.level: LogLevel = level
-        self.handlers: list[Handler] = handlers
+        self.handlers: set[Handler] = handlers
         self.enqueue: bool = enqueue
         self.is_async: bool = is_async
         self.uuid = uuid.uuid4()
+        self.only_handler: bool = only_handler
         if enqueue and is_async:
             raise InvalidConfigurationException("Cannot use enqueue and is_async at the same time")
         if enqueue:
@@ -65,14 +66,14 @@ class Logger:
         else:
             pass
 
-    def addLevel(self, level: dict[str, int]) -> None:
-        LogLevel.addlevel(level)
+    def addLevel(self, level: LogLevel) -> None:
+        addlevel(level)
 
     def setLevel(self, level: LogLevel) -> None:
         self.level = level
 
     def addHandler(self, handler: Handler) -> None:
-        self.handlers.append(handler)
+        self.handlers.add(handler)
 
     def removeHandler(self, handler: Handler) -> None:
         self.handlers.remove(handler)
@@ -148,13 +149,13 @@ class Logger:
         if exc_traceback is not None:
             exc_info = ExtractException(exc_type, exc_value, exc_traceback)
             if is_fatal:
-                self.__log(LogLevel.FATAL, f"{message}\n{exc_info}")
+                self.__log(Level.FATAL, f"{message}\n{exc_info}")
             else:
-                self.__log(LogLevel.ERROR, f"{message}\n{exc_info}")
+                self.__log(Level.ERROR, f"{message}\n{exc_info}")
         elif is_fatal:
-            self.__log(LogLevel.FATAL, message)
+            self.__log(Level.FATAL, message)
         else:
-            self.__log(LogLevel.ERROR, message)
+            self.__log(Level.ERROR, message)
 
     def log(self, level: LogLevel, message: Message) -> None:
         """
@@ -166,34 +167,34 @@ class Logger:
         """
         记录一个 TRACE 级别的日志
         """
-        self.__log(LogLevel.TRACE, message)
+        self.__log(Level.TRACE, message)
 
     def debug(self, message: Message) -> None:
         """
         记录一个 DEBUG 级别的日志
         """
-        self.__log(LogLevel.DEBUG, message)
+        self.__log(Level.DEBUG, message)
 
     def info(self, message: Message) -> None:
         """
         记录一个 INFO 级别的日志
         """
-        self.__log(LogLevel.INFO, message)
+        self.__log(Level.INFO, message)
 
     def warning(self, message: Message) -> None:
         """
         记录一个 WARN 级别的日志
         """
-        self.__log(LogLevel.WARN, message)
+        self.__log(Level.WARN, message)
 
     def error(self, message: Message) -> None:
         """
         记录一个 ERROR 级别的日志
         """
-        self.__log(LogLevel.ERROR, message)
+        self.__log(Level.ERROR, message)
 
     def fatal(self, message: Message) -> None:
         """
         记录一个 FATAL 级别的日志
         """
-        self.__log(LogLevel.FATAL, message)
+        self.__log(Level.FATAL, message)

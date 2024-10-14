@@ -1,6 +1,6 @@
 import sys
 
-__version__ = "0.2.6"
+__version__ = "0.2.7"
 __author__ = "<符玄(KOKOMI12345)>"
 __email__ = "3072252442@qq.com"
 __license__ = "MIT"

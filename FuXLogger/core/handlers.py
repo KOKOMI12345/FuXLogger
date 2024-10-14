@@ -2,8 +2,6 @@ from ..utils.interfaces import IHandler
 from .LogBody import LogRecord
 from .formatter import LogFormatter
 from .loglevel import LogLevel
-from .logcolor import _logColors as LogColor
-from ..utils.color import Font
 from ..utils import Render
 from ..utils.exceptions import NotImplementedException
 import threading
@@ -35,7 +33,6 @@ class StreamHandler(Handler):
         super().__init__(name, level, formatter)
         self.stream = stream
         self.colorize = colorize
-        self.colors = LogColor
         self.enableXMLRender = enableXMLRender
 
     def write(self, message: str) -> None:
@@ -43,15 +40,15 @@ class StreamHandler(Handler):
         self.stream.flush()
 
     def handle(self, record: LogRecord) -> None:
-        if record.level.value >= self.level.value:
+        if record.level.level >= self.level.level:
             if self.colorize and self.enableXMLRender:
-                color = self.colors.get(record.level)
+                color = record.level.color
                 record.message = Render.renderWithXML(record.message)
-                renderedMsg = Render.render(self.formatter.format(record), color, Font.BOLD) # type: ignore
+                renderedMsg = Render.render(self.formatter.format(record), color, record.level.font) # type: ignore
                 self.write(f"{renderedMsg}\n")
             elif self.colorize:
-                color = self.colors.get(record.level)
-                renderedMsg = Render.render(self.formatter.format(record), color, Font.BOLD) # type: ignore
+                color = record.level.color
+                renderedMsg = Render.render(self.formatter.format(record), color, record.level.font) # type: ignore
                 self.write(f"{renderedMsg}\n")
             else:
                 self.write(f"{self.formatter.format(record)}\n")
@@ -108,7 +105,7 @@ class SocketHandler(Handler):
         self.close() # close socket when main thread is not alive
 
     def handle(self, record: LogRecord) -> None:
-        if record.level.value >= self.level.value:
+        if record.level.level >= self.level.level:
             message = Render.removeTags(self.formatter.format(record))
             self.process_queue.put(message)
             
@@ -129,7 +126,7 @@ class FileHandler(Handler):
         self.lock = threading.Lock()
 
     def handle(self, record: LogRecord) -> None:
-        if record.level.value >= self.level.value:
+        if record.level.level >= self.level.level:
             with self.lock:
                 with open(self.filename, self.mode, encoding=self.encoding) as f:
                     f.write(f"{Render.removeTags(self.formatter.format(record))}\n")
