@@ -29,7 +29,7 @@ class Level:
     ERROR = LogLevel("ERROR", 5, Color.RED, Font.BOLD)
     FATAL = LogLevel("FATAL", 6, Color.PURPLE, Font.BOLD)
     OFF = LogLevel("OFF", float('inf'))
-
+    
 _str_to_level = {
     "ON": Level.ON,
     "TRACE": Level.TRACE,

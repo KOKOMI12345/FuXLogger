@@ -1,7 +1,7 @@
 
 from .loglevel import LogLevel
 from dataclasses import dataclass
-from ..utils.types import Message
+from ..utils._typeInfo import Message
 
 @dataclass
 class LogRecord:

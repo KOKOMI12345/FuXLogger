@@ -6,7 +6,7 @@ from ..utils import ExtractException
 from ..utils.excformat import GetStackTrace
 from ..utils.timeutil import getLocalDateTime, getUTCDateTime
 from ..utils.exceptions import InvalidConfigurationException
-from ..utils.types import Message
+from ..utils._typeInfo import Message
 from ..utils.exceptions import InvalidEnvironmentException
 from ..utils.LogQueue import LogQueue , LogQueueEmptyException
 import threading
